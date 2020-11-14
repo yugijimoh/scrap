@@ -1,0 +1,11 @@
+url:https://yq.aliyun.com/search?q=python&type=ARTICLE
+
+page3: https://yq.aliyun.com/search/articles/?spm=a2c4e.11163080.searchblog.144.44fb2ec1iUdUPp&q=python&idx=default&days=&p=3
+page5: https://yq.aliyun.com/search/articles/?spm=a2c4e.11163080.searchblog.175.225c2ec12faD9d&q=python&idx=default&days=&p=5
+
+page3: https://yq.aliyun.com/search/articles/?q=python&idx=default&days=&p=3
+page5: https://yq.aliyun.com/search/articles/?q=python&idx=default&days=&p=5
+
+total: 31679 
+record/page=15
+page: (31679/15) +1=2111

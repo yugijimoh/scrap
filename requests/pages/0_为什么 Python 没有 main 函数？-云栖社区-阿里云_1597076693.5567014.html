@@ -1,0 +1,53 @@
+为什么 Python 没有 main 函数？-云栖社区-阿里云<br/><br/>
+                                                                        
+<blockquote><p>云栖号资讯：【<a href="https://yqh.aliyun.com/?cate=%E8%B5%84%E8%AE%AF">点击查看更多行业资讯</a>】<br>在这里您可以找到不同行业的第一手的上云资讯，还在等什么，快来！</p></blockquote>
+<p>众所周知，Python中没有所谓的main函数，但是网上经常有文章提到“ Python的main函数”和“建议编写main函数”。</p>
+<p>其实，可能他们是想模仿真正的main函数，但是许多人都被误导（或误解），然后编写了非常笨拙的代码。</p>
+<p>在本文中，我们来讨论一下为什么Python没有main函数。</p>
+<p>在开始讨论之前，我们先来回答以下两个问题：</p>
+<p>所谓的“main函数”究竟是什么意思？</p>
+<p>为什么有些编程语言必须编写main函数？</p>
+<p>一些编程语言将main函数作为程序的执行入口，比如C/C++、C#、Java、Go、Rust等等，这个函数具有特定的含义：</p>
+<p>main函数名是必须的，这意味着必须有一个主函数。</p>
+<p>最多只能有一个main函数，这意味着程序的入口是唯一的。</p>
+<p>语法格式有特定要求，书写形式也相对固定。</p>
+<p>为什么必须强制main函数作为入口？<br>这些语言都是编译语言，需要将代码编译成可执行的二进制文件。为了让操作系统/引导程序找到程序的开头，需要定义这样一个函数。</p>
+<p>简而言之，需要在大量可执行的代码中定义一个至关重要的的开头。</p>
+<p>不难看出，对于这些语言来说，main函数是不可或缺的组成部分。</p>
+<p>但是，当我们把目光转向Python时，就会发现情况大不相同。</p>
+<p>Python是一种解释语言，即脚本语言。运行过程是从上到下，逐行进行的，这意味着它的起点是已知的。</p>
+<p>每个.py文件都是一个可执行文件，可作为整个程序的入口文件，意味着该程序的入口很灵活，而且无需遵循任何约定。</p>
+<p>有时运行Python项目时不需要有指定入口文件（命令行比较常见，例如“ python -m http.server 8000”），可能是因为该项目中有main.py文件，在软件包中作为“文件”来执行。 </p>
+<p>总而言之，Python作为脚本语言不同于编译语言。无论是单个模块（即.py文件），还是由多个模块组成的软件包，Python都可以选择一种灵活的执行方法，这完全不像其他语言那样必须定义入口。</p>
+<p>换句话说，Python不需要规定程序员必须在语法上定义一个统一的入口（无论是函数、类还是其他东西）。</p>
+<p>有些学生可能会感到困惑，因为他们经常看到或编写以下代码：</p>
+<h1>main file</h1>
+<p>def main():</p>
+<pre><code>……</code></pre>
+<p>if <strong>name</strong> == '__main__':</p>
+<pre><code>main()
+</code></pre>
+<p>这不就是Python的main函数吗？相信很多人都这么认为！</p>
+<p>不，并不是。</p>
+<p>除了函数名是“main”之外，这段代码与我们前面介绍的main函数没有半点关系，这个函数既不是必须的，也不能确定程序的执行顺序。即便没有上面这样的main函数，也不会有任何的语法问题。</p>
+<p>人们想编写一个main函数的主要原因其实是为了强调这是一个主函数，希望人为地将其设置成第一个执行的函数。</p>
+<p>他们可能认为这个名字的函数更容易记住。<br>他们之所以要编写__name__ =='__main__'，可能是因为想表明main()只在直接执行当前脚本时才运行，而在将其导入到其他模块时不要运行。</p>
+<p>但是，我个人不推荐这种写法。</p>
+<p>举一个简单的例子，假设只有几十行代码，或者一个脚本文件实现了一个简单的功能（一个爬虫，或画一只乌龟，等等），但都是按照前面的方式编写的。</p>
+<p>不推荐if <strong>name</strong> == '__main__'的写法，因为：</p>
+<p>首先，如果只有一个文件的话，那么这个文件不可能被导出。</p>
+<p>其次，如果有多个文件，强烈建议不要将这个语句写在入口文件（main.py）中。从理论上讲，它的内容不应该导出供其他模块使用，因为它是起点。</p>
+<p>最后，在多个文件的情况下，也不建议在非入口的文件中写入这条语句，因为这条语句能做的最多也就是编写一些测试代码。即便如此，测试代码也应分开写到专用目录或文件中。</p>
+<p>每次看到这些笨拙的代码时，我都会感到不适。为什么要写这样的if语句？你压根不应该将这段代码包装成一个函数！</p>
+<p>总结<br>打破惯性思维，编写真实的代码。main函数是某些语言的唯一入口，但不应在Python中使用。你应该了解脚本语言的特征，并学习简单而优雅的风格。</p>
+<p>你可以使用main.py，而不是编写main函数。由于Python程序的执行单元是脚本文件，而不是函数或类，因此建议将入口文件命名为main.py，并根据需要决定内部的函数。</p>
+<p>将main.py作为入口文件。该文件可直接与命令行的“-m”参数结合使用。</p>
+<p>原文：<a href="https://yq.aliyun.com/go/articleRenderRedirect?url=https%3A%2F%2Ftowardsdatascience.com%2Fwhy-doesnt-python-have-a-main-function-3afe6a8d093" data-url="https://towardsdatascience.com/why-doesnt-python-have-a-main-function-3afe6a8d093">https://towardsdatascience.com/why-doesnt-python-have-a-main-function-3afe6a8d093</a></p>
+<blockquote>
+<p>【云栖号在线课堂】每天都有产品技术专家分享！<br>课程地址：<a href="https://yqh.aliyun.com/live">https://yqh.aliyun.com/live</a></p>
+<p>立即加入社群，与专家面对面，及时了解课程最新动态！<br>【云栖号在线课堂 社群】<a href="https://yq.aliyun.com/go/articleRenderRedirect?url=https%3A%2F%2Fc.tb.cn%2FF3.Z8gvnK" data-url="https://c.tb.cn/F3.Z8gvnK">https://c.tb.cn/F3.Z8gvnK</a></p>
+</blockquote>
+<p>原文发布时间：2020-07-21<br>本文作者：Pawan Jain<br>本文来自：“ CSDN”，了解相关信息可以关注“ <a href="https://yq.aliyun.com/go/articleRenderRedirect?url=https%3A%2F%2Fmp.weixin.qq.com%2Fs%2FNr1nD6qKKRd-C55PCV-sGw" data-url="https://mp.weixin.qq.com/s/Nr1nD6qKKRd-C55PCV-sGw">CSDN</a>”</p>
+
+                                                            </div>
+                                

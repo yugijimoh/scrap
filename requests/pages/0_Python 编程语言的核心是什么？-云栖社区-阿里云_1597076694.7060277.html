@@ -1,0 +1,38 @@
+Python 编程语言的核心是什么？-云栖社区-阿里云<br/><br/>
+                                                                        
+<blockquote><p>云栖号资讯：【<a href="https://yqh.aliyun.com/?cate=%E8%B5%84%E8%AE%AF">点击查看更多行业资讯</a>】<br>在这里您可以找到不同行业的第一手的上云资讯，还在等什么，快来！</p></blockquote>
+<p></p>
+<p style="text-align:center;"><strong>为什么要问这个问题？</strong></p>
+<p>我想要用Python实现WebAssembly，这并不是什么秘密。这不仅可以让Python进入浏览器，而且由于iOS和Android都支持将JavaScript作为应用的一部分运行，因此Python也可以进入移动开发。想到这些我就觉得兴奋。</p>
+<p>但是每当想到创建一个新Python实现的艰巨任务时，我就会不断地问自己：</p>
+<p>“Python究竟是什么？”</p>
+<p>我们使用CPython已经很长时间了，以至于我怀疑我们大多数人都认为“ Python == CPython”。PyPy试图将兼容做到极致，所以他们打算实现CPython的实现细节。基本上，我所知道的大多数Python实现都会为通过CPython的测试套件而努力，并尽可能与CPython兼容。<br>这就有点可怕了。</p>
+<p>CPython实现的Python非常动态，它公开了许多东西，只有当你以某种方式使用解释器实现Python才有意义。例如，PyPy有一个基本的解释器使用JIT，但是你可以通过Python中的很多东西来迫使PyPy关闭JIT并坚持使用字节码。仅凭REPL就让Python变得十分动态，因为输入到REPL的所有内容都会由解释器动态地解析、编译和执行。</p>
+<p>因此我开始思考：Python到底是什么的问题？这门语言的核心究竟是什么？究竟Python实现需要覆盖到哪些基本功能，才能成为人们心目中认可的Python实现？还有以我来看，将Python直接编译成WebAssembly的实现需要付出多少代价？</p>
+<p></p>
+<p style="text-align:center;"><strong>Python是否需要REPL？</strong></p>
+<p>我真正开始思考这个问题是当我开始思考将Python编译成WebAssembly都需要什么的时候。这并不是要实现另一个解释器，而是从Python源代码产生静态的WebAssembly，并且它依然可以称为“Python”。</p>
+<p>我知道的，通过eva()或compile()进行动态编译可能不容易实现，因为WebAssembly的安全模型会在加载时验证模块。这意味着没有办法在其他代码的内存空间内运行任意代码，这可能会加剧实现REPL的难度。</p>
+<p>但这让我思考：Python真的需要REPL吗？别误会我的意思，它非常方便，但是我的意思是，如果某个实现不包含REPL，那么它还是Python吗？我认为无REPL的Python仍然是Python，只是缺少（可能是关键的）功能。</p>
+<p>这不禁让我思考必须将Python的哪些部分视为“ Python”的想法。</p>
+<p>没有locals()行不行？能够将定义的所有局部变量及其值都收集到一个字典中，这是非常动态的东西。如果你使用像CPython这种解释器，那么只需要从当前的执行帧里取一些东西就能获得locals。但在编译语言中，实现这一点需要大量工作，因为你必须知道应当何时收集这些信息，因为调用locals()的时候并不一定所有信息都存在。</p>
+<p>如果有人重载了locals()怎么办？同样，在CPython中这也不是什么问题，因为builtins模块有一个__dict__属性，只需要重载它，就会向下传递到以后的调用中。但在编译语言中，做类似的检测需要大量的工作，最终会影响性能。</p>
+<p>那么sys.settrace()呢？它会触发每个字节的回调，而如果代码已经编译，这一点是无法实现的。尽管你可以通过检查每行末尾是否设置了跟踪函数来模仿这一行为，但这似乎有点过了，因为绝大多数情况下这种钩子并不存在（尽管可以实现为编译器开关）。</p>
+<p>那么sys._getframe()呢？编译语言并不一定能够直接访问每个执行帧，那么你还要不要模拟这一行为？由于任何函数都可以请求执行帧，你必须时刻准备着提供执行帧。</p>
+<p>可见，Python中有很多东西加剧了编译的难度（因此Nuitka拥有更大的能力来应对这一挑战）。但是我敢打赌，上面提到的内容在99.9%的情况下都不会使用，因此，如果这些功能没有实现，那么是否仍可以将其视为“Python”？</p>
+<p></p>
+<p style="text-align:center;"><strong>具备多少兼容性才有意义？</strong></p>
+<p>这个问题我没有很好的答案。但是这个问题的答案标志着实现Python的难度以及与现有软件的兼容性。我会说，我认为WebAssembly不需要支持大量的Python软件。WebAssembly可以访问Rust和JavaScript等其他语言生态系统，因此你需要的某个东西完全有可能在其他语言中已经实现了。</p>
+<p></p>
+<p style="text-align:center;"><strong>我没有答案</strong></p>
+<p>也许我们可以开发一个将Python代码直接转换为WebAssembly并牺牲性能兼容性的编译器。也许我们可以开发针对WebAssembly设计的解释器，同时与先前已有的代码保持兼容性。也许可以仅在其WebAssembly工作中支持RustPython。也许Pyodide可以实现这一点。我认为这些都有可能，这些都有可能激发人们的兴趣，进而产生更好的结果。</p>
+<p>对此，你怎么看呢？</p>
+<p>原文：<a href="https://yq.aliyun.com/go/articleRenderRedirect?url=https%3A%2F%2Fsnarky.ca%2Fwhat-is-the-core-of-the-python-programming-language%2F" data-url="https://snarky.ca/what-is-the-core-of-the-python-programming-language/">https://snarky.ca/what-is-the-core-of-the-python-programming-language/</a></p>
+<blockquote>
+<p>【云栖号在线课堂】每天都有产品技术专家分享！<br>课程地址：<a href="https://yqh.aliyun.com/live">https://yqh.aliyun.com/live</a></p>
+<p>立即加入社群，与专家面对面，及时了解课程最新动态！<br>【云栖号在线课堂 社群】<a href="https://yq.aliyun.com/go/articleRenderRedirect?url=https%3A%2F%2Fc.tb.cn%2FF3.Z8gvnK" data-url="https://c.tb.cn/F3.Z8gvnK">https://c.tb.cn/F3.Z8gvnK</a></p>
+</blockquote>
+<p>原文发布时间：2020-07-14<br>本文作者：Brett Cannon<br>本文来自：“csdn”，了解相关信息可以关注“<a href="https://yq.aliyun.com/go/articleRenderRedirect?url=https%3A%2F%2Fmp.weixin.qq.com%2Fs%2FCj11voSFeJEFpro_fFxYUw" data-url="https://mp.weixin.qq.com/s/Cj11voSFeJEFpro_fFxYUw">csdn</a>”</p>
+
+                                                            </div>
+                                
